@@ -23,6 +23,18 @@ def clearNetworkConfig(serverIp, username='root', passwd='fortinet', serverPort=
     intList = mySsh.execCommand('ip link|grep -E -v "^ "|awk \'{print $2}\'|awk -F ":" \'{print $1}\'')
 
     for j in intList[0]:
+        findMgmtResult = mySsh.execCommand(
+            'ip add show ' + str(j).replace('\n', '') + '|grep ' + str(serverIp) + ' > /dev/null 2>/dev/null; echo $?')
+        if findMgmtResult[0][0].find('0') != -1:
+            checkOsResult = mySsh.execCommand('ls /etc/ | grep redhat > /dev/null 2>/dev/null ; echo $?')
+            if checkOsResult[0][0].find('1') != -1:
+                # Ubuntu
+                mySsh.execCommand('ip add flush dev ' + str(j).replace('\n', '') + ' ; systemctl restart networking')
+            else:
+                #CentOS
+                mySsh.execCommand('ip add flush dev ' + str(j).replace('\n', '') + ' ; systemctl restart network')
+            break
+    for j in intList[0]:
         findMgmtResult = mySsh.execCommand('ip add show '+str(j).replace('\n', '')+'|grep '+str(serverIp)+' > /dev/null 2>/dev/null; echo $?')
         if findMgmtResult[0][0].find('0') != -1:
             print '"'+str(j).replace('\n', '')+'" is the management interface, skip this step.'

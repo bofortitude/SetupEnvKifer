@@ -26,15 +26,18 @@ class SshAgent():
         stderrList = stderr.readlines()
         #print 'The result from remote server "'+self.remoteIp+':'+str(self.remotePort)+'" is:'
         if stdoutList != []:
-            print ''
+            print '\n---------------- Result ----------------'
+            print self.username+'@'+self.remoteIp+':~# '+command
             for i in stdoutList:
                 print i,
-            print ''
+            print self.username + '@' + self.remoteIp + ':~# '
+            print '----------------------------------------\n'
         if stderrList != []:
-            print 'The error from remote server "'+self.remoteIp+':'+str(self.remotePort)+'" is:\n'
+            #print 'The error from remote server "'+self.remoteIp+':'+str(self.remotePort)+'" is:\n'
+            print '\n!!!!!!!!!!!!!! Error !!!!!!!!!!!!!!'
             for j in stderrList:
                 print j,
-            print ''
+            print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n'
         return stdoutList, stderrList
 
 
